@@ -1,6 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
+
+// Define the type for a transaction
+interface Transaction {
+  amount: string;
+  date: string;
+  description: string;
+  category: string;
+}
 
 const categories = ['Food', 'Transport', 'Health', 'Entertainment', 'Others'];
 
@@ -9,7 +17,10 @@ export default function Home() {
   const [date, setDate] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
-  const [transactions, setTransactions] = useState([]);
+  
+  // Explicitly typing transactions state as Transaction[]
+  const [transactions, setTransactions] = useState<Transaction[]>([]); // Fix here: state is now explicitly typed
+  
   const [searchTerm, setSearchTerm] = useState('');
 
   // Load transactions from localStorage on first render
@@ -21,9 +32,9 @@ export default function Home() {
   }, []);
 
   // Handle form submission to add new transaction
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newTransaction = { amount, date, description, category };
+    const newTransaction: Transaction = { amount, date, description, category };
     const updatedTransactions = [...transactions, newTransaction];
     setTransactions(updatedTransactions);
     localStorage.setItem('transactions', JSON.stringify(updatedTransactions));
@@ -74,6 +85,7 @@ export default function Home() {
 
         {/* Transaction Form */}
         <form onSubmit={handleSubmit}>
+          {/* Amount input */}
           <div style={{ marginBottom: '10px' }}>
             <label>Amount:</label>
             <input
@@ -85,6 +97,7 @@ export default function Home() {
             />
           </div>
 
+          {/* Date input */}
           <div style={{ marginBottom: '10px' }}>
             <label>Date:</label>
             <input
@@ -96,6 +109,7 @@ export default function Home() {
             />
           </div>
 
+          {/* Description input */}
           <div style={{ marginBottom: '10px' }}>
             <label>Description:</label>
             <input
@@ -107,6 +121,7 @@ export default function Home() {
             />
           </div>
 
+          {/* Category input */}
           <div style={{ marginBottom: '10px' }}>
             <label>Category:</label>
             <input
